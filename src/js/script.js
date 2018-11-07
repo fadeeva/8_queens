@@ -3,6 +3,9 @@ window.onload = function() { init(); }
 let canvas = null;
 let ctx = null;
 
+let numberOfQueens = 0;
+let queen = document.getElementById("queen");
+
 function init() {
     canvas = document.getElementById("squares");
     canvasCnt = document.getElementById("chess_desk");
@@ -18,12 +21,37 @@ function init() {
     
     drawChessSquares(sideOfSquare, squareColor);
     
-    
     canvas.addEventListener("click", function(event) {
         let mousePos = getClickCoord(canvas, canvasCnt, event)
-        drawDot(mousePos.x, mousePos.y, sideOfSquare)
+        //drawDot(mousePos.x, mousePos.y, sideOfSquare)
+        putTheQueen(mousePos.x, mousePos.y, sideOfSquare)
+        getSquarePos(mousePos.x, mousePos.y, sideOfSquare)
     });
 
+}
+
+function getSquarePos(clickX, clickY, sideOfSquare) {
+    let vertical = Math.ceil(clickX / sideOfSquare);
+    let horizontal = Math.ceil(clickY / sideOfSquare);
+    
+    let chessHorizontal = Math.abs(Math.ceil(clickY / sideOfSquare) - 9)
+    let chessVertical = "abcdefgh".charAt(vertical - 1);
+    
+    console.log("vert: " + vertical + ", horiz: " + horizontal)
+    console.log("chessV: " + chessVertical + ", chessH: " + chessHorizontal)
+}
+
+function putTheQueen(x, y, sideOfSquare) {
+    let centerX = Math.ceil(x / sideOfSquare) * sideOfSquare - sideOfSquare / 2;
+    let centerY = Math.ceil(y / sideOfSquare) * sideOfSquare - sideOfSquare / 2;
+    
+    if(numberOfQueens < 8) {
+        ctx.drawImage(queen, centerX - parseInt(queen.width / 2), centerY - parseInt(queen.height / 2));
+        numberOfQueens++;
+    } else {
+        return;
+    }
+    
 }
 
 function drawDot(x, y, sideOfSquare) {
@@ -38,8 +66,7 @@ function drawDot(x, y, sideOfSquare) {
     ctx.fill();
 }
 
-function getClickCoord(canvas, canvasCnt, event) {
-    
+function getClickCoord(canvas, canvasCnt, event) {  
     let offsetX = canvas.offsetLeft;
     let offsetY = canvas.offsetTop;
     let offsetCntY = canvasCnt.offsetTop;
