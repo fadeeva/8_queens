@@ -22,14 +22,18 @@ function init() {
     drawChessSquares(sideOfSquare, squareColor);
     
     canvas.addEventListener("click", function(event) {
-        let mousePos = getClickCoord(canvas, canvasCnt, event)
+        let setQueen = getClickCoord(canvas, canvasCnt, event, sideOfSquare)
         //drawDot(mousePos.x, mousePos.y, sideOfSquare)
-        putTheQueen(mousePos.x, mousePos.y, sideOfSquare)
-        getSquarePos(mousePos.x, mousePos.y, sideOfSquare)
+        putTheQueen(setQueen.horizontal, setQueen.vertical, sideOfSquare)
+        //getSquarePos(mousePos.x, mousePos.y, sideOfSquare)
     });
 
 }
 
+/**
+ * Вспомогательная функция для определения координат, 
+ * поведение похоже на getClickCoord(). Позже удалить.
+ */
 function getSquarePos(clickX, clickY, sideOfSquare) {
     let vertical = Math.ceil(clickX / sideOfSquare);
     let horizontal = Math.ceil(clickY / sideOfSquare);
@@ -41,9 +45,15 @@ function getSquarePos(clickX, clickY, sideOfSquare) {
     console.log("chessV: " + chessVertical + ", chessH: " + chessHorizontal)
 }
 
-function putTheQueen(x, y, sideOfSquare) {
-    let centerX = Math.ceil(x / sideOfSquare) * sideOfSquare - sideOfSquare / 2;
-    let centerY = Math.ceil(y / sideOfSquare) * sideOfSquare - sideOfSquare / 2;
+
+/**
+ * Ставит королеву на клетку, по которой кликнули.
+ * Получает горизонталь, вертикаль клика (не координаты!!!)
+ * и длину стороны квадрата.
+ */
+function putTheQueen(horizontal, vertical, sideOfSquare) {
+    let centerX = horizontal * sideOfSquare - sideOfSquare / 2;
+    let centerY = vertical * sideOfSquare - sideOfSquare / 2;
     
     if(numberOfQueens < 8) {
         ctx.drawImage(queen, centerX - parseInt(queen.width / 2), centerY - parseInt(queen.height / 2));
@@ -54,6 +64,10 @@ function putTheQueen(x, y, sideOfSquare) {
     
 }
 
+/**
+ * Вспомогательная функция для рисования точки в центре 
+ * квадрата, по которому кликнули, вместо королевы. Позже удалить.
+ */
 function drawDot(x, y, sideOfSquare) {
     let centerX = Math.ceil(x / sideOfSquare) * sideOfSquare - sideOfSquare / 2;
     let centerY = Math.ceil(y / sideOfSquare) * sideOfSquare - sideOfSquare / 2;
@@ -66,18 +80,41 @@ function drawDot(x, y, sideOfSquare) {
     ctx.fill();
 }
 
-function getClickCoord(canvas, canvasCnt, event) {  
+
+/**
+ * EventListener для клика. Определяет координаты клика, горизонталь
+ * и вертикаль клика, в тч и в виде шахматной нотации, возвращает
+ * всё это в виде объекта
+ */
+function getClickCoord(canvas, canvasCnt, event, sideOfSquare) {  
     let offsetX = canvas.offsetLeft;
     let offsetY = canvas.offsetTop;
-    let offsetCntY = canvasCnt.offsetTop;
-    let offsetCntX = canvasCnt.offsetLeft;
+    let offsetCntY = canvasCnt.offsetTop; // top div'a, в котором лежит canvas
+    let offsetCntX = canvasCnt.offsetLeft; // left div'a, в котором лежит canvas
     
-    let mouseX = Math.abs(parseInt(event.pageX-(offsetX + offsetCntX)));
-    let mouseY = Math.abs(parseInt(event.pageY-(offsetY + offsetCntY)));
+    let clickX = Math.abs(parseInt(event.pageX-(offsetX + offsetCntX)));
+    let clickY = Math.abs(parseInt(event.pageY-(offsetY + offsetCntY)));
     
-    return { x: mouseX, y: mouseY }
+    let horizontal = Math.ceil(clickX / sideOfSquare);
+    let vertical = Math.ceil(clickY / sideOfSquare);
+    
+    let chessHorizontal = Math.abs(Math.ceil(clickY / sideOfSquare) - 9)
+    let chessVertical = "abcdefgh".charAt(vertical - 1);
+    
+    return { 
+            pixelX: clickX,
+            pixelY: clickY,
+            vertical: vertical,
+            horizontal: horizontal,
+            chessVertical: chessVertical,
+            chessHorizontal: chessHorizontal
+        }
 }
 
+/**
+ * Рисует шахматную доску, учитывая длину стороны клетки (sideOfSquare)
+ * и цвета для клетки (squareColor)
+ */
 function drawChessSquares(sideOfSquare, squareColor) {
     let currentColor = squareColor.light;
     let x = 0, y = 0; 
