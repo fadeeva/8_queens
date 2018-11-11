@@ -101,3 +101,45 @@ ul {
 	background: #b5b5b5;
     margin: 40px 0 0 40px;
 }
+
+#icons_ctn {
+	margin: 40px 0px 40px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+#icons_ctn li {
+	margin-bottom: 80px;
+    padding: 0px;
+    
+    height: 80px;
+}
+
+#icons_ctn li:last-child, #icons_ctn li#empty_item {
+	margin-bottom: 0px;
+}
+
+#kfadeeva_logo_ctn {
+	align-self: center;
+}
+
+#counter_back_icon_ctn {
+    position: relative;
+    
+    width: 78px;
+}
+
+#counter_num_ctn {
+	position: absolute;
+    width: inherit;
+    font-family: "Gilroy Extra Bold";
+    font-size: 48px;
+    color: #232323;
+}
+
+#counter_num_ctn span#counter_num {
+	display: flex;
+    justify-content: center;
+    margin-top: 16px;
+}

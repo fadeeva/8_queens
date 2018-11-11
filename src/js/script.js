@@ -54,10 +54,11 @@ function getSquarePos(clickX, clickY, sideOfSquare) {
 function putTheQueen(horizontal, vertical, sideOfSquare) {
     let centerX = horizontal * sideOfSquare - sideOfSquare / 2;
     let centerY = vertical * sideOfSquare - sideOfSquare / 2;
+    let counter = document.getElementById("counter_num")
     
     if(numberOfQueens < 8) {
         ctx.drawImage(queen, centerX - parseInt(queen.width / 2), centerY - parseInt(queen.height / 2));
-        numberOfQueens++;
+        counter.innerHTML = ++numberOfQueens;
     } else {
         return;
     }
