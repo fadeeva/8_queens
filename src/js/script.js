@@ -5,6 +5,8 @@ let ctx = null;
 
 let numberOfQueens = 0;
 let queen = document.getElementById("queen");
+let tipOff = document.getElementById("tip_off");
+tipOff.style.opacity = 1;
 
 function init() {
     canvas = document.getElementById("squares");
@@ -26,6 +28,15 @@ function init() {
         //drawDot(mousePos.x, mousePos.y, sideOfSquare)
         putTheQueen(setQueen.horizontal, setQueen.vertical, sideOfSquare)
         //getSquarePos(mousePos.x, mousePos.y, sideOfSquare)
+    });
+    
+    tipOff.addEventListener("click", function(event) {
+        if(this.style.opacity == 0) {
+            this.style.opacity = 1;
+        } else {
+            this.style.opacity = 0;
+        }
+        tipToggle();
     });
 
 }
@@ -133,4 +144,11 @@ function drawChessSquares(sideOfSquare, squareColor) {
         y += sideOfSquare;   
     }
 
+}
+
+/**
+ * Включение подсказки
+ */
+function tipToggle() { 
+    console.log("toggle for tip")
 }

@@ -143,3 +143,7 @@ ul {
     justify-content: center;
     margin-top: 16px;
 }
+
+#tip_icon_ctn, #info_icon_ctn {
+    cursor: pointer;
+}
