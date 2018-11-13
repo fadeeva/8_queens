@@ -3,7 +3,7 @@ window.onload = function() { init(); }
 let canvas = null;
 let ctx = null;
 
-let numberOfQueens = 0;
+let queenArr = [];
 let queen = document.getElementById("queen");
 let tipOff = document.getElementById("tip_off");
 tipOff.style.opacity = 1;
@@ -26,7 +26,7 @@ function init() {
     canvas.addEventListener("click", function(event) {
         let setQueen = getClickCoord(canvas, canvasCnt, event, sideOfSquare)
         //drawDot(mousePos.x, mousePos.y, sideOfSquare)
-        putTheQueen(setQueen.horizontal, setQueen.vertical, sideOfSquare)
+        putTheQueen(setQueen, sideOfSquare)
         //getSquarePos(mousePos.x, mousePos.y, sideOfSquare)
     });
     
@@ -59,21 +59,28 @@ function getSquarePos(clickX, clickY, sideOfSquare) {
 
 /**
  * Ставит королеву на клетку, по которой кликнули.
- * Получает горизонталь, вертикаль клика (не координаты!!!)
+ * Получает объект с координатами
  * и длину стороны квадрата.
  */
-function putTheQueen(horizontal, vertical, sideOfSquare) {
-    let centerX = horizontal * sideOfSquare - sideOfSquare / 2;
-    let centerY = vertical * sideOfSquare - sideOfSquare / 2;
+function putTheQueen(posObj, sideOfSquare) {
     let counter = document.getElementById("counter_num")
     
-    if(numberOfQueens < 8) {
-        ctx.drawImage(queen, centerX - parseInt(queen.width / 2), centerY - parseInt(queen.height / 2));
-        counter.innerHTML = ++numberOfQueens;
+    if(queenArr.length < 8) {
+        drawQueenOnCanvas(posObj)
+        queenArr.push({id: queenArr.length, coord: posObj})
+        counter.innerHTML = queenArr.length;
     } else {
         return;
     }
     
+    console.log(queenArr)
+}
+
+/**
+ * Рисует королеву на канвасе, получает объект с координатами
+ */
+function drawQueenOnCanvas(posObj) {
+    ctx.drawImage(queen, posObj.canvasX - parseInt(queen.width / 2), posObj.canvasY - parseInt(queen.height / 2));
 }
 
 /**
@@ -107,8 +114,11 @@ function getClickCoord(canvas, canvasCnt, event, sideOfSquare) {
     let clickX = Math.abs(parseInt(event.pageX-(offsetX + offsetCntX)));
     let clickY = Math.abs(parseInt(event.pageY-(offsetY + offsetCntY)));
     
-    let horizontal = Math.ceil(clickX / sideOfSquare);
-    let vertical = Math.ceil(clickY / sideOfSquare);
+    let vertical = Math.ceil(clickX / sideOfSquare);
+    let horizontal = Math.ceil(clickY / sideOfSquare);
+    
+    let canvasX = vertical * sideOfSquare - sideOfSquare / 2;
+    let canvasY = horizontal * sideOfSquare - sideOfSquare / 2;
     
     let chessHorizontal = Math.abs(Math.ceil(clickY / sideOfSquare) - 9)
     let chessVertical = "abcdefgh".charAt(vertical - 1);
@@ -116,6 +126,8 @@ function getClickCoord(canvas, canvasCnt, event, sideOfSquare) {
     return { 
             pixelX: clickX,
             pixelY: clickY,
+            canvasX: canvasX,
+            canvasY: canvasY,
             vertical: vertical,
             horizontal: horizontal,
             chessVertical: chessVertical,

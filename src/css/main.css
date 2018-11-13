@@ -97,6 +97,15 @@ ul {
     position: relative;
 }
 
+/*
+.flexbox_ctn {
+	flex: 3;
+    text-align: center;
+}
+*/
+
+/*aside { flex: 1; }*/
+
 #squares {
 	background: #b5b5b5;
     margin: 40px 0 0 40px;
@@ -121,7 +130,7 @@ ul {
 }
 
 #kfadeeva_logo_ctn {
-	align-self: center;
+	align-self: flex-start;
 }
 
 #counter_back_icon_ctn {
