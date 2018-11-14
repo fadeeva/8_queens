@@ -15,8 +15,12 @@ function init() {
     ctx = canvas.getContext("2d");
     
     let squareColor = {
-        dark : '#987a64',
-        light : '#e4dad3'
+        dark:  '#987a64',
+        light: '#e4dad3',
+        highlight: {
+            dark:  "#bb625e",
+            light: "#e89ba1"
+        }
     }
     
     let sideOfSquare = 80;
@@ -36,7 +40,7 @@ function init() {
         } else {
             this.style.opacity = 0;
         }
-        tipToggle();
+        tipToggle(queenArr,sideOfSquare, squareColor);
     });
 
 }
@@ -147,7 +151,7 @@ function drawChessSquares(sideOfSquare, squareColor) {
             ctx.fillStyle = currentColor;
             ctx.fillRect(x, y, sideOfSquare, sideOfSquare);
             ctx.fill();
-            x += 80;
+            x += sideOfSquare;
 
             if(j != 7)
                 currentColor = (currentColor == squareColor.light) ? squareColor.dark : squareColor.light;
@@ -161,6 +165,49 @@ function drawChessSquares(sideOfSquare, squareColor) {
 /**
  * Включение подсказки
  */
-function tipToggle() { 
-    console.log("toggle for tip")
+function tipToggle(queenArr, sideOfSquare, squareColor) { 
+
+    if(queenArr.length != 0) {
+        for(let i = 0; i < queenArr.length; i++) {
+            for(let j = 0; j < 8; j++) {
+                if(j == (queenArr[i].coord.vertical - 1)) continue;
+                
+                if(queenArr[i].coord.horizontal % 2 == 0) {
+                    if(j % 2 != 0) {
+                        ctx.fillStyle = squareColor.highlight.light;
+                    } else {
+                        ctx.fillStyle = squareColor.highlight.dark;
+                    }
+                } else {
+                    if(j % 2 != 0) {
+                        ctx.fillStyle = squareColor.highlight.dark;
+                    } else {
+                        ctx.fillStyle = squareColor.highlight.light;
+                    }
+                }
+                ctx.fillRect(sideOfSquare * j, (queenArr[i].coord.horizontal - 1) * sideOfSquare, sideOfSquare, sideOfSquare);
+                ctx.fill();
+            }
+            
+            for(let k = 0; k < 8; k++) {
+                if(k == queenArr[i].coord.horizontal - 1) continue;
+                
+                if(queenArr[i].coord.vertical % 2 == 0) {
+                    if(k % 2 != 0) {
+                        ctx.fillStyle = squareColor.highlight.light;
+                    } else {
+                        ctx.fillStyle = squareColor.highlight.dark;
+                    }
+                } else {
+                    if(k % 2 != 0) {
+                        ctx.fillStyle = squareColor.highlight.dark;
+                    } else {
+                        ctx.fillStyle = squareColor.highlight.light;
+                    }
+                }
+                ctx.fillRect((queenArr[i].coord.vertical - 1) * sideOfSquare, sideOfSquare * k, sideOfSquare, sideOfSquare);
+                ctx.fill();
+            }
+        }
+    }
 }
