@@ -8,20 +8,23 @@ let queen = document.getElementById("queen");
 let tipOff = document.getElementById("tip_off");
 tipOff.style.opacity = 1;
 
+let squareColor = {
+    dark:  '#987a64',
+    light: '#e4dad3',
+    highlight: {
+        dark:  "#bb625e",
+        light: "#e89ba1"
+    }
+}
+
+/*
+ * Стартовая точка игры.
+ */
 function init() {
     canvas = document.getElementById("squares");
     canvasCnt = document.getElementById("chess_desk");
     
     ctx = canvas.getContext("2d");
-    
-    let squareColor = {
-        dark:  '#987a64',
-        light: '#e4dad3',
-        highlight: {
-            dark:  "#bb625e",
-            light: "#e89ba1"
-        }
-    }
     
     let sideOfSquare = 80;
     
@@ -85,6 +88,13 @@ function putTheQueen(posObj, sideOfSquare) {
  */
 function drawQueenOnCanvas(posObj) {
     ctx.drawImage(queen, posObj.canvasX - parseInt(queen.width / 2), posObj.canvasY - parseInt(queen.height / 2));
+}
+
+/**
+ * Удаляем королеву с канваса, получает объект с координатами
+ */
+function deleteQueenFromCanvas(posObj) {
+    
 }
 
 /**
@@ -166,48 +176,70 @@ function drawChessSquares(sideOfSquare, squareColor) {
  * Включение подсказки
  */
 function tipToggle(queenArr, sideOfSquare, squareColor) { 
-
+    let colorVar = {};
     if(queenArr.length != 0) {
         for(let i = 0; i < queenArr.length; i++) {
-            for(let j = 0; j < 8; j++) {
-                if(j == (queenArr[i].coord.vertical - 1)) continue;
-                
-                if(queenArr[i].coord.horizontal % 2 == 0) {
-                    if(j % 2 != 0) {
-                        ctx.fillStyle = squareColor.highlight.light;
-                    } else {
-                        ctx.fillStyle = squareColor.highlight.dark;
-                    }
-                } else {
-                    if(j % 2 != 0) {
-                        ctx.fillStyle = squareColor.highlight.dark;
-                    } else {
-                        ctx.fillStyle = squareColor.highlight.light;
-                    }
-                }
-                ctx.fillRect(sideOfSquare * j, (queenArr[i].coord.horizontal - 1) * sideOfSquare, sideOfSquare, sideOfSquare);
-                ctx.fill();
-            }
+            colorVar = getHighlightColor(queenArr[i].coord)
             
-            for(let k = 0; k < 8; k++) {
-                if(k == queenArr[i].coord.horizontal - 1) continue;
+            for(let j = 0; j < 8; j++) {                
                 
-                if(queenArr[i].coord.vertical % 2 == 0) {
-                    if(k % 2 != 0) {
-                        ctx.fillStyle = squareColor.highlight.light;
-                    } else {
-                        ctx.fillStyle = squareColor.highlight.dark;
-                    }
-                } else {
-                    if(k % 2 != 0) {
-                        ctx.fillStyle = squareColor.highlight.dark;
-                    } else {
-                        ctx.fillStyle = squareColor.highlight.light;
-                    }
+                // горизонталь, проверяем, чтобы на клетке не было королевы
+                if(j != (queenArr[i].coord.vertical - 1)) {
+                    ctx.fillStyle = colorVar.h[j % 2];
+                    ctx.fillRect(sideOfSquare * j, (queenArr[i].coord.horizontal - 1) * sideOfSquare, sideOfSquare, sideOfSquare);
+                    ctx.fill();
                 }
-                ctx.fillRect((queenArr[i].coord.vertical - 1) * sideOfSquare, sideOfSquare * k, sideOfSquare, sideOfSquare);
-                ctx.fill();
+                
+                // вертикаль, проверяем, чтобы на клетке не было королевы
+                if(j != queenArr[i].coord.horizontal - 1) {
+                    ctx.fillStyle = colorVar.v[j % 2];
+                    ctx.fillRect((queenArr[i].coord.vertical - 1) * sideOfSquare, sideOfSquare * j, sideOfSquare, sideOfSquare);
+                    ctx.fill();
+                }
+                
+                // клетку, на которой стоит королева, пропускаем
+                continue;
             }
         }
     }
+}
+
+/**
+ * Вычисляем цвета для подсветки полей,
+ * которых бьёт королева
+ */
+function getHighlightColor(coord) {
+    let highlightArr = {};
+    if(coord.horizontal % 2 != 0) { // нечётная горизонталь
+        if(coord.vertical % 2 != 0) { // нечётная вертикаль
+            // same light
+            highlightArr = {
+                v: [squareColor.highlight.light, squareColor.highlight.dark],
+                h: [squareColor.highlight.light, squareColor.highlight.dark]
+            }
+        } else { // чётная вертикаль
+            // diff
+            // v: dark, h: light
+            highlightArr = {
+                v: [squareColor.highlight.dark, squareColor.highlight.light],
+                h: [squareColor.highlight.light, squareColor.highlight.dark]
+            }
+        }
+    } else { // чётная горизонталь
+        if(coord.vertical % 2 != 0) { // нечётная вертикаль
+            //  diff
+            // v: light, h: dark
+            highlightArr = {
+                v: [squareColor.highlight.light, squareColor.highlight.dark],
+                h: [squareColor.highlight.dark, squareColor.highlight.light]
+            }
+        } else { // чётная вертикаль
+            // same dark
+            highlightArr = {
+                v: [squareColor.highlight.dark, squareColor.highlight.light],
+                h: [squareColor.highlight.dark, squareColor.highlight.light]
+            }
+        }
+    }
+    return highlightArr;
 }
