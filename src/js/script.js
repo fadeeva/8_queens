@@ -197,6 +197,34 @@ function tipToggle(queenArr, sideOfSquare, squareColor) {
                     ctx.fill();
                 }
                 
+                // диагональ
+                ctx.fillStyle = colorVar.d;
+                
+                ctx.fillRect((j) * sideOfSquare,
+                             (j) * sideOfSquare,
+                             sideOfSquare, sideOfSquare);
+                ctx.fill();
+                
+                ctx.fillRect((j) * sideOfSquare,
+                             (7 - j) * sideOfSquare,
+                             sideOfSquare, sideOfSquare);
+                ctx.fill();
+                
+//                ctx.fillRect((queenArr[i].coord.horizontal - 1 + j) * sideOfSquare,
+//                             (queenArr[i].coord.vertical - 1 - j) * sideOfSquare,
+//                             sideOfSquare, sideOfSquare);
+//                ctx.fill();
+//                
+//                ctx.fillRect((queenArr[i].coord.horizontal + 1 - j) * sideOfSquare,
+//                             (queenArr[i].coord.vertical - 1 - j) * sideOfSquare,
+//                             sideOfSquare, sideOfSquare);
+//                ctx.fill();
+//                
+//                ctx.fillRect((queenArr[i].coord.horizontal + 1 + j) * sideOfSquare,
+//                             (queenArr[i].coord.vertical - 1 + j) * sideOfSquare,
+//                             sideOfSquare, sideOfSquare);
+//                ctx.fill();
+                
                 // клетку, на которой стоит королева, пропускаем
                 continue;
             }
@@ -210,34 +238,38 @@ function tipToggle(queenArr, sideOfSquare, squareColor) {
  */
 function getHighlightColor(coord) {
     let highlightArr = {};
-    if(coord.horizontal % 2 != 0) { // нечётная горизонталь
-        if(coord.vertical % 2 != 0) { // нечётная вертикаль
-            // same light
-            highlightArr = {
-                v: [squareColor.highlight.light, squareColor.highlight.dark],
-                h: [squareColor.highlight.light, squareColor.highlight.dark]
-            }
-        } else { // чётная вертикаль
-            // diff
-            // v: dark, h: light
+    if(coord.horizontal % 2 == 0) { // чётная горизонталь
+        if(coord.vertical % 2 == 0) { // чётная вертикаль
+            // same dark
             highlightArr = {
                 v: [squareColor.highlight.dark, squareColor.highlight.light],
-                h: [squareColor.highlight.light, squareColor.highlight.dark]
+                h: [squareColor.highlight.dark, squareColor.highlight.light],
+                d: squareColor.highlight.light
             }
-        }
-    } else { // чётная горизонталь
-        if(coord.vertical % 2 != 0) { // нечётная вертикаль
+        } else { // нечётная вертикаль
             //  diff
             // v: light, h: dark
             highlightArr = {
                 v: [squareColor.highlight.light, squareColor.highlight.dark],
-                h: [squareColor.highlight.dark, squareColor.highlight.light]
+                h: [squareColor.highlight.dark, squareColor.highlight.light],
+                d: squareColor.highlight.dark
             }
-        } else { // чётная вертикаль
-            // same dark
+        }
+    } else { // нечётная горизонталь
+        if(coord.vertical % 2 == 0) { // чётная вертикаль
+            // diff
+            // v: dark, h: light
             highlightArr = {
                 v: [squareColor.highlight.dark, squareColor.highlight.light],
-                h: [squareColor.highlight.dark, squareColor.highlight.light]
+                h: [squareColor.highlight.light, squareColor.highlight.dark],
+                d: squareColor.highlight.dark
+            }
+        } else { // нечётная вертикаль
+            // same light
+            highlightArr = {
+                v: [squareColor.highlight.light, squareColor.highlight.dark],
+                h: [squareColor.highlight.light, squareColor.highlight.dark],
+                d: squareColor.highlight.light
             }
         }
     }
