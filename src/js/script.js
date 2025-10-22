@@ -1,6 +1,6 @@
 window.onload = function() { init(); }
 
-let canvas = null;
+const canvas = document.getElementById("squares");
 let ctx = null;
 
 let queenArr = [];
@@ -17,11 +17,16 @@ let squareColor = {
     }
 }
 
+const svgCursorPath = "src/img/mini_queen.svg";
+canvas.addEventListener("mouseover", () => {
+    canvas.style.cursor = `url(${svgCursorPath}), auto`; 
+});
+
 /*
  * Стартовая точка игры.
  */
 function init() {
-    canvas = document.getElementById("squares");
+//    canvas = document.getElementById("squares");
     canvasCnt = document.getElementById("chess_desk");
     
     ctx = canvas.getContext("2d");
