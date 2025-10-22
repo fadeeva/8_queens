@@ -18,7 +18,14 @@
     src: url("../fonts/Gilroy-Light.otf");
 }
 
-body { background: #232323; }
+:root {
+    --bg-clr: #232323;
+    --desk-ch: #7a7a7a;
+    --desk-border: #1d1d1d;
+    --light-square: #b5b5b5;
+}
+
+body { background: var(--bg-clr); }
 
 header {
     display: flex;
@@ -42,7 +49,7 @@ ul {
 #desk_numbers, #desk_letters {
     font-family: "Gilroy Light";
     font-size: 18px;
-    color: #7a7a7a;
+    color: var(--desk-ch);
 }
 
 #desk_numbers {
@@ -90,7 +97,7 @@ ul {
 #chess_desk {
 	width: 720px;
     height: 720px;
-    background: #1d1d1d;
+    background: var(--desk-border);
     
     box-sizing: border-box;
     
@@ -107,7 +114,7 @@ ul {
 /*aside { flex: 1; }*/
 
 #squares {
-	background: #b5b5b5;
+	background: var(--light-square);
     margin: 40px 0 0 40px;
 }
 
@@ -144,7 +151,7 @@ ul {
     width: inherit;
     font-family: "Gilroy Extra Bold";
     font-size: 48px;
-    color: #232323;
+    color: var(--bg-clr);
 }
 
 #counter_num_ctn span#counter_num {
@@ -153,6 +160,6 @@ ul {
     margin-top: 16px;
 }
 
-#tip_icon_ctn, #info_icon_ctn {
+#tip_icon_ctn, #info_icon_ctn, #squares {
     cursor: pointer;
 }
