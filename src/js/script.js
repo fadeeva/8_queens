@@ -36,9 +36,9 @@ function init() {
     drawChessSquares(sideOfSquare, squareColor);
     
     canvas.addEventListener("click", function(event) {
-        let setQueen = getClickCoord(canvas, canvasCnt, event, sideOfSquare)
+        let setQueenCoord = getClickCoord(canvas, canvasCnt, event, sideOfSquare)
         //drawDot(mousePos.x, mousePos.y, sideOfSquare)
-        putTheQueen(setQueen, sideOfSquare)
+        putTheQueen(setQueenCoord, sideOfSquare)
         //getSquarePos(mousePos.x, mousePos.y, sideOfSquare)
     });
     
@@ -68,24 +68,31 @@ function getSquarePos(clickX, clickY, sideOfSquare) {
     console.log("chessV: " + chessVertical + ", chessH: " + chessHorizontal)
 }
 
+/**
+ * Узнаём свободна ли клетка
+ */
+function isPlaceFree(posObj) {
+    for(const queen of queenArr) {
+        if(queen.coord.canvasX == posObj.canvasX && queen.coord.canvasY == posObj.canvasY)
+            return false;
+    }
+    
+    return true;
+}
 
 /**
  * Ставит королеву на клетку, по которой кликнули.
- * Получает объект с координатами
- * и длину стороны квадрата.
+ * Получает объект с координатами.
  */
-function putTheQueen(posObj, sideOfSquare) {
-    let counter = document.getElementById("counter_num")
-    
-    if(queenArr.length < 8) {
-        drawQueenOnCanvas(posObj)
+function putTheQueen(posObj) {
+    let counter = document.getElementById("counter_num");
+
+    if(!queenArr.length || queenArr.length<8 && isPlaceFree(posObj)) {
+        drawQueenOnCanvas(posObj);
         queenArr.push({id: queenArr.length, coord: posObj})
         counter.innerHTML = queenArr.length;
-    } else {
-        return;
-    }
+    } 
     
-    console.log(queenArr)
 }
 
 /**
