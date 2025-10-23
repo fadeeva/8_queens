@@ -26,7 +26,6 @@ canvas.addEventListener("mouseover", () => {
  * Стартовая точка игры.
  */
 function init() {
-//    canvas = document.getElementById("squares");
     canvasCnt = document.getElementById("chess_desk");
     
     ctx = canvas.getContext("2d");
@@ -38,7 +37,7 @@ function init() {
     canvas.addEventListener("click", function(event) {
         let setQueenCoord = getClickCoord(canvas, canvasCnt, event, sideOfSquare)
         //drawDot(mousePos.x, mousePos.y, sideOfSquare)
-        putTheQueen(setQueenCoord, sideOfSquare)
+        putTheQueen(setQueenCoord)
         //getSquarePos(mousePos.x, mousePos.y, sideOfSquare)
     });
     
@@ -73,7 +72,7 @@ function getSquarePos(clickX, clickY, sideOfSquare) {
  */
 function isPlaceFree(posObj) {
     for(const queen of queenArr) {
-        if(queen.coord.canvasX == posObj.canvasX && queen.coord.canvasY == posObj.canvasY)
+        if(queen.coord.canvasX==posObj.canvasX && queen.coord.canvasY==posObj.canvasY)
             return false;
     }
     
@@ -86,27 +85,41 @@ function isPlaceFree(posObj) {
  */
 function putTheQueen(posObj) {
     let counter = document.getElementById("counter_num");
-
-    if(!queenArr.length || queenArr.length<8 && isPlaceFree(posObj)) {
-        drawQueenOnCanvas(posObj);
-        queenArr.push({id: queenArr.length, coord: posObj})
-        counter.innerHTML = queenArr.length;
-    } 
     
+    if(isPlaceFree(posObj)) {
+        if(!queenArr.length || queenArr.length<8) {
+            drawQueenOnCanvas(posObj);
+            queenArr.push({id: queenArr.length, coord: posObj})
+            counter.innerHTML = queenArr.length;
+        }
+    } else {
+        deleteQueenFromCanvas(posObj);
+        counter.innerHTML = queenArr.length;
+    }
 }
 
 /**
  * Рисует королеву на канвасе, получает объект с координатами
  */
 function drawQueenOnCanvas(posObj) {
-    ctx.drawImage(queen, posObj.canvasX - parseInt(queen.width / 2), posObj.canvasY - parseInt(queen.height / 2));
+    ctx.drawImage(queen,
+                  posObj.canvasX - parseInt(queen.width / 2),
+                  posObj.canvasY - parseInt(queen.height / 2));
 }
 
 /**
  * Удаляем королеву с канваса, получает объект с координатами
  */
 function deleteQueenFromCanvas(posObj) {
-    
+    console.log(posObj)
+    let queen_id = -1;
+    for(const queen of queenArr) {
+        if(queen.coord.canvasX==posObj.canvasX && queen.coord.canvasY==posObj.canvasY) {
+            queen_id = queen.id;
+            break;
+        }     
+    }
+    queenArr.splice(queen_id, 1);
 }
 
 /**
@@ -149,6 +162,10 @@ function getClickCoord(canvas, canvasCnt, event, sideOfSquare) {
     let chessHorizontal = Math.abs(Math.ceil(clickY / sideOfSquare) - 9)
     let chessVertical = "abcdefgh".charAt(vertical - 1);
     
+    let color = (
+        (horizontal%2 && vertical%2) || (!horizontal%2 && !vertical%2)
+    ) ? squareColor.light : squareColor.dark;
+    
     return { 
             pixelX: clickX,
             pixelY: clickY,
@@ -157,10 +174,11 @@ function getClickCoord(canvas, canvasCnt, event, sideOfSquare) {
             vertical: vertical,
             horizontal: horizontal,
             chessVertical: chessVertical,
-            chessHorizontal: chessHorizontal
+            chessHorizontal: chessHorizontal,
+            squareColor: color
         }
 }
-
+console.log(5%2)
 /**
  * Рисует шахматную доску, учитывая длину стороны клетки (sideOfSquare)
  * и цвета для клетки (squareColor)
