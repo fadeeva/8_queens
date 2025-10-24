@@ -17,6 +17,8 @@ let squareColor = {
     }
 }
 
+const sideOfSquare = 80;
+
 const svgCursorPath = "src/img/mini_queen.svg";
 canvas.addEventListener("mouseover", () => {
     canvas.style.cursor = `url(${svgCursorPath}), auto`; 
@@ -29,8 +31,6 @@ function init() {
     canvasCnt = document.getElementById("chess_desk");
     
     ctx = canvas.getContext("2d");
-    
-    let sideOfSquare = 80;
     
     drawChessSquares(sideOfSquare, squareColor);
     
@@ -111,15 +111,18 @@ function drawQueenOnCanvas(posObj) {
  * Удаляем королеву с канваса, получает объект с координатами
  */
 function deleteQueenFromCanvas(posObj) {
-    console.log(posObj)
-    let queen_id = -1;
     for(const queen of queenArr) {
         if(queen.coord.canvasX==posObj.canvasX && queen.coord.canvasY==posObj.canvasY) {
-            queen_id = queen.id;
+            queenArr.splice(queenArr.indexOf(queen), 1);
             break;
         }     
     }
-    queenArr.splice(queen_id, 1);
+    
+    ctx.fillStyle = posObj.squareColor;
+    let x = posObj.canvasX - sideOfSquare / 2;
+    let y = posObj.canvasY - sideOfSquare / 2;
+    ctx.fillRect(x, y, sideOfSquare, sideOfSquare);
+    ctx.fill();
 }
 
 /**
@@ -163,9 +166,9 @@ function getClickCoord(canvas, canvasCnt, event, sideOfSquare) {
     let chessVertical = "abcdefgh".charAt(vertical - 1);
     
     let color = (
-        (horizontal%2 && vertical%2) || (!horizontal%2 && !vertical%2)
+        (horizontal%2==0 && vertical%2==0) || (horizontal%2!=0 && vertical%2!=0)
     ) ? squareColor.light : squareColor.dark;
-    
+
     return { 
             pixelX: clickX,
             pixelY: clickY,
@@ -178,7 +181,7 @@ function getClickCoord(canvas, canvasCnt, event, sideOfSquare) {
             squareColor: color
         }
 }
-console.log(5%2)
+
 /**
  * Рисует шахматную доску, учитывая длину стороны клетки (sideOfSquare)
  * и цвета для клетки (squareColor)
