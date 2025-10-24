@@ -1,14 +1,16 @@
 window.onload = function() { init(); }
 
 const canvas = document.getElementById("squares");
-let ctx = null;
+const canvasCnt = document.getElementById("chess_desk");
+const ctx = canvas.getContext("2d");
 
-let queenArr = [];
-let queen = document.getElementById("queen");
-let tipOff = document.getElementById("tip_off");
+const sideOfSquare = 80;
+const queenArr = [];
+const queen = document.getElementById("queen");
+const tipOff = document.getElementById("tip_off");
 tipOff.style.opacity = 1;
 
-let squareColor = {
+const squareColor = {
     dark:  '#987a64',
     light: '#e4dad3',
     highlight: {
@@ -16,8 +18,6 @@ let squareColor = {
         light: "#e89ba1"
     }
 }
-
-const sideOfSquare = 80;
 
 const svgCursorPath = "src/img/mini_queen.svg";
 canvas.addEventListener("mouseover", () => {
@@ -28,17 +28,13 @@ canvas.addEventListener("mouseover", () => {
  * Стартовая точка игры.
  */
 function init() {
-    canvasCnt = document.getElementById("chess_desk");
-    
-    ctx = canvas.getContext("2d");
-    
-    drawChessSquares(sideOfSquare, squareColor);
+    drawChessSquares();
     
     canvas.addEventListener("click", function(event) {
-        let setQueenCoord = getClickCoord(canvas, canvasCnt, event, sideOfSquare)
-        //drawDot(mousePos.x, mousePos.y, sideOfSquare)
+        let setQueenCoord = getClickCoord(event)
+        //drawDot(mousePos.x, mousePos.y)
         putTheQueen(setQueenCoord)
-        //getSquarePos(mousePos.x, mousePos.y, sideOfSquare)
+        //getSquarePos(mousePos.x, mousePos.y)
     });
     
     tipOff.addEventListener("click", function(event) {
@@ -47,7 +43,7 @@ function init() {
         } else {
             this.style.opacity = 0;
         }
-        tipToggle(queenArr,sideOfSquare, squareColor);
+        tipToggle();
     });
 
 }
@@ -56,7 +52,7 @@ function init() {
  * Вспомогательная функция для определения координат, 
  * поведение похоже на getClickCoord(). Позже удалить.
  */
-function getSquarePos(clickX, clickY, sideOfSquare) {
+function getSquarePos(clickX, clickY) {
     let vertical = Math.ceil(clickX / sideOfSquare);
     let horizontal = Math.ceil(clickY / sideOfSquare);
     
@@ -129,7 +125,7 @@ function deleteQueenFromCanvas(posObj) {
  * Вспомогательная функция для рисования точки в центре 
  * квадрата, по которому кликнули, вместо королевы. Позже удалить.
  */
-function drawDot(x, y, sideOfSquare) {
+function drawDot(x, y) {
     let centerX = Math.ceil(x / sideOfSquare) * sideOfSquare - sideOfSquare / 2;
     let centerY = Math.ceil(y / sideOfSquare) * sideOfSquare - sideOfSquare / 2;
     
@@ -147,7 +143,7 @@ function drawDot(x, y, sideOfSquare) {
  * и вертикаль клика, в тч и в виде шахматной нотации, возвращает
  * всё это в виде объекта
  */
-function getClickCoord(canvas, canvasCnt, event, sideOfSquare) {  
+function getClickCoord(event) {  
     let offsetX = canvas.offsetLeft;
     let offsetY = canvas.offsetTop;
     let offsetCntY = canvasCnt.offsetTop; // top div'a, в котором лежит canvas
@@ -186,7 +182,7 @@ function getClickCoord(canvas, canvasCnt, event, sideOfSquare) {
  * Рисует шахматную доску, учитывая длину стороны клетки (sideOfSquare)
  * и цвета для клетки (squareColor)
  */
-function drawChessSquares(sideOfSquare, squareColor) {
+function drawChessSquares() {
     let currentColor = squareColor.light;
     let x = 0, y = 0; 
     for(let i = 0; i < 8; i++) {
@@ -208,7 +204,7 @@ function drawChessSquares(sideOfSquare, squareColor) {
 /**
  * Включение подсказки
  */
-function tipToggle(queenArr, sideOfSquare, squareColor) { 
+function tipToggle() { 
     let colorVar = {};
     if(queenArr.length != 0) {
         for(let i = 0; i < queenArr.length; i++) {
