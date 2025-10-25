@@ -43,7 +43,7 @@ function init() {
         } else {
             this.style.opacity = 0;
         }
-        tipToggle();
+        helpToggle();
     });
 
 }
@@ -59,8 +59,12 @@ function getSquarePos(clickX, clickY) {
     let chessHorizontal = Math.abs(Math.ceil(clickY / sideOfSquare) - 9)
     let chessVertical = "abcdefgh".charAt(vertical - 1);
     
-    console.log("vert: " + vertical + ", horiz: " + horizontal)
-    console.log("chessV: " + chessVertical + ", chessH: " + chessHorizontal)
+    return {
+        vertical: vertical,
+        horizontal: horizontal,
+        chessVertical: chessVertical,
+        chessHorizontal: chessHorizontal
+    }
 }
 
 /**
@@ -118,22 +122,6 @@ function deleteQueenFromCanvas(posObj) {
     let x = posObj.canvasX - sideOfSquare / 2;
     let y = posObj.canvasY - sideOfSquare / 2;
     ctx.fillRect(x, y, sideOfSquare, sideOfSquare);
-    ctx.fill();
-}
-
-/**
- * Вспомогательная функция для рисования точки в центре 
- * квадрата, по которому кликнули, вместо королевы. Позже удалить.
- */
-function drawDot(x, y) {
-    let centerX = Math.ceil(x / sideOfSquare) * sideOfSquare - sideOfSquare / 2;
-    let centerY = Math.ceil(y / sideOfSquare) * sideOfSquare - sideOfSquare / 2;
-    
-    console.log(centerX + ", " + centerY + " | " + x + ", " + y);
-    
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, 10, 0, 2 * Math.PI, false);
-    ctx.fillStyle = "#232323";
     ctx.fill();
 }
 
@@ -202,9 +190,49 @@ function drawChessSquares() {
 }
 
 /**
+ * Вспомогательная функция для рисования точки в центре 
+ * квадрата, по которому кликнули, вместо королевы. Позже удалить.
+ */
+function drawDot(x, y) {
+    let centerX = Math.ceil(x / sideOfSquare) * sideOfSquare - sideOfSquare / 2;
+    let centerY = Math.ceil(y / sideOfSquare) * sideOfSquare - sideOfSquare / 2;
+    
+//    console.log(centerX + ", " + centerY + " | " + x + ", " + y);
+    
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 10, 0, 2 * Math.PI, false);
+    ctx.fillStyle = squareColor.highlight.dark;
+    ctx.fill();
+}
+
+/**
  * Включение подсказки
  */
-function tipToggle() { 
+function helpToggle() {
+    let x, y, squareH, squareV;
+    for(const queen of queenArr) {
+        for(let i=1; i<9; i++) {
+            xh = i*sideOfSquare;
+            yh = queen.coord.horizontal*sideOfSquare;
+            
+            xv = queen.coord.vertical*sideOfSquare;
+            yv = i*sideOfSquare;
+            
+            squareH = getSquarePos(xh, yh);
+            squareV = getSquarePos(xv, yv);
+            
+            if(!(squareH.horizontal==queen.coord.horizontal && squareH.vertical==queen.coord.vertical))
+                drawDot(xh, yh);
+            
+            if(!(squareV.horizontal==queen.coord.horizontal && squareV.vertical==queen.coord.vertical))
+                drawDot(xv, yv);
+            
+        }
+    }
+}
+
+/*
+function helpToggle() {   
     let colorVar = {};
     if(queenArr.length != 0) {
         for(let i = 0; i < queenArr.length; i++) {
@@ -260,11 +288,12 @@ function tipToggle() {
         }
     }
 }
-
+*/
 /**
  * Вычисляем цвета для подсветки полей,
  * которых бьёт королева
  */
+/*
 function getHighlightColor(coord) {
     let highlightArr = {};
     if(coord.horizontal % 2 == 0) { // чётная горизонталь
@@ -304,3 +333,4 @@ function getHighlightColor(coord) {
     }
     return highlightArr;
 }
+*/
